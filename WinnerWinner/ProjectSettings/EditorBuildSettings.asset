@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Login.unity
     guid: 6801227f03a105d488809206f5219a14
   - enabled: 1
+    path: Assets/Scenes/Giveaway1.unity
+    guid: 91292842c80d95643addf80a939a8bac
+  - enabled: 0
     path: Assets/Scenes/Giveaway.unity
     guid: 7715a9c7d8387e3409ea8903536884f5
   - enabled: 1

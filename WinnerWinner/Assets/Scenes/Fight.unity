@@ -686,7 +686,7 @@ MonoBehaviour:
   - {fileID: 706236011}
   newDraw: {fileID: 1945506040}
   gos: []
-  total: 2
+  total: 5
   again: 0
 --- !u!4 &1103559647
 Transform:

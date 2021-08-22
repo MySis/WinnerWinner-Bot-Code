@@ -46,40 +46,26 @@ public class GameManager : MonoBehaviour
     public void AddList(string name, int value)
     {
         InfoHandler info = GameObject.Find("InfoHandler").GetComponent<InfoHandler>();
-        if (!info.subsT.isOn && !info.modsT.isOn)
-        {
-            names.Add(name);
-        }
-        else if (info.subsT.isOn && !info.modsT.isOn)
-        {
+        names.Add(name);
 
-            if (value == 0)
+        if (value ==1)
+        {
+            if (info.subsT.isOn || info.submodT.isOn)            
             {
-                names.Add(name);
-            }
-            else if (value >= 1)
-            {
-                names.Add(name);
                 names.Add(name);
             }
         }
-        else if (info.subsT.isOn && info.modsT.isOn)
+        if (value ==2)
         {
-            if (value == 0)
+            if(info.modsT.isOn)
             {
                 names.Add(name);
+                names.Add(name);                
             }
-            else if (value == 1)
+            else if (info.submodT.isOn)
             {
                 names.Add(name);
-                names.Add(name);
-            }
-            else if (value == 2)
-            {
-                names.Add(name);
-                names.Add(name);
-                names.Add(name);
-            }
+            }    
         }
     }
     public void Pickname()
@@ -95,9 +81,26 @@ public class GameManager : MonoBehaviour
 
         number = names.Count;
         winnerName = winname;
-        GameObject.Find("StartBattle").SetActive(true);
     }
-    public void RedrawName()
+    public void QuickpickName()
+    {
+        InfoHandler info = GameObject.Find("InfoHandler").GetComponent<InfoHandler>();
+        int total = names.Count;
+        int win;
+        if (total == 1)
+            win = 0;
+        else
+            win = Random.Range(0, total);
+
+        string winname = names[win];
+
+        number = names.Count;
+        Debug.Log("Winner name is " + winname + " and the number is " + win);
+        info.QuickPickName.text = winname;
+        winnerName = winname;
+        info.quickpick = true;
+    }
+public void RedrawName()
     {
         int total = names.Count;
         int win;

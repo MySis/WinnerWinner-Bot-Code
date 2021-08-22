@@ -32,18 +32,10 @@ public class SpaceController : MonoBehaviour
             {
                 for (int ai = 0; ai < gos.Count; ai++)
                 {
-                    if (Physics2D.OverlapCircle(spawnpos, 2, 6))
-                    {
-                        InstantiatePrefab();
-                    }
-
-                    else
-                    {
                         GameObject pref = (GameObject)Instantiate(prefab, spawnpos, Quaternion.identity);
                         pref.transform.LookAt(transform);
                         gos.Add(pref);
                         return;
-                    }
                 }
             }
             else
@@ -55,7 +47,7 @@ public class SpaceController : MonoBehaviour
     }
     Vector2 findRandom()
     {
-        float Horizontal = Random.Range(-5, 5);
+        float Horizontal = Random.Range(-8, 8);
         float Vertical = Random.Range(-5, 5);
         Vector2 spawnpos = new Vector2(Horizontal, Vertical);
         return spawnpos;

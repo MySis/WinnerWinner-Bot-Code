@@ -16,6 +16,8 @@ public class InfoHandler : MonoBehaviour
     public GameObject Validating;
     public GameObject Giveaway;
     public GameObject Timer;
+
+
     #endregion
     #region Gather Names
     public int count;
@@ -33,13 +35,18 @@ public class InfoHandler : MonoBehaviour
     public InputField AlertMessage;
     public Toggle subsT;
     public Toggle modsT;
+    public Toggle submodT;
+    public Toggle SubOnly;
+    public Toggle ModOnly;
     public Toggle send;
     public Text timeText;
+    public Text QuickPickName;
     #endregion
     #region Drawing
     public float drawtime;
     public float msgTime;
     private bool countdown;
+    public bool quickpick;
     #endregion
     public GameObject warning;
 
@@ -86,7 +93,7 @@ public class InfoHandler : MonoBehaviour
 
             else if (drawtime <= 0)
             {
-                DisplayTime(0);
+                timeText.text = "0:00";
                 countdown = false;
                 client.sendMess("The entry period is over! Thank you for joining the giveaway.");
             }
@@ -97,6 +104,7 @@ public class InfoHandler : MonoBehaviour
     {
         if (!Validated)
         {
+            quickpick = false;
             if (validationWord.text.Length >= 8)
                 if (e.ChatMessage.Username.ToLower() == gm.channelChoice.ToLower())
                     if (e.ChatMessage.Message.ToLower() == validationWord.text.ToLower())
@@ -108,7 +116,10 @@ public class InfoHandler : MonoBehaviour
                         gm.Valid = true;
                     }
                     else
+                    {
+                        client.sendMess("That is not the correct Validation word, please try again");
                         return;
+                    }
                 else
                     return;
             else
@@ -117,7 +128,8 @@ public class InfoHandler : MonoBehaviour
         int value = 0;
         if (countdown)
         {
-            if (e.ChatMessage.Message == command)
+            quickpick = false;
+            if (e.ChatMessage.Message.ToLower() == command.ToLower())
             {
                 string name = e.ChatMessage.Username;
                 if (countdown)
@@ -128,50 +140,68 @@ public class InfoHandler : MonoBehaviour
                         value = 2;
                     else if (e.ChatMessage.IsSubscriber)
                         value = 1;
-                    DisplayList(name, value);
+
+                    if (submodT.isOn && value <= 1)
+                        DisplayList(name, value);
                 }
                 else
                 {
                     return;
                 }
+
+                if (e.ChatMessage.Message.ToLower() == "!entries")
+                {
+                    for (int i = 0; i < Parts.Count; i++)
+                    {
+                        client.sendMess(participants[i]);
+                    }
+                }
+            }
+            if (quickpick)
+            {
+                if (e.ChatMessage.Username == gm.winnerName)
+                {
+                    client.sendMess("Congratulations " + e.ChatMessage.Username + " you have won! Not only that, but you proved you're a real person too!");
+                    quickpick = false;
+                }
             }
         }
     }
     public void DisplayList(string name, int value)
-    {
-        int a = 0;
-        if (count > 20)
-            a = 1;
-        else if (count > 40)
-            a = 2;
-        else if (count > 60)
-            a = 3;
-
-        if (count > 0)
         {
-            for (int i = 0; i < gm.names.Count; i++)
+            int a = 0;
+            if (count > 20)
+                a = 1;
+            else if (count > 40)
+                a = 2;
+            else if (count > 60)
+                a = 3;
+
+            if (count > 0)
             {
-                if (gm.names[i] == name)
+                for (int i = 0; i < gm.names.Count; i++)
                 {
-                    return;
+                    if (gm.names[i] == name)
+                    {
+                        return;
+                    }
                 }
+                count = +1;
+                participants[a] += name + "\n";
+                Parts[a].text = participants[a];
+                gm.AddList(name, value);
+                client.sendMess("Congratulations " + name + " you have joined the giveaway!");
             }
-            count = +1;
-            participants[a] += name + "\n";
-            Parts[a].text = participants[a];
-            gm.AddList(name, value);
-            client.sendMess("Congratulations " + name + " you have joined the giveaway!");
-        }
-        else
-        {
-            count += 1;
-            participants[0] += name + "\n";
-            Parts[0].text = participants[0];
-            gm.AddList(name, value);
-            client.sendMess("Congratulations " + name + " you have joined the giveaway!");
-        }
+            else
+            {
+                count += 1;
+                participants[0] += name + "\n";
+                Parts[0].text = participants[0];
+                gm.AddList(name, value);
+                client.sendMess("Congratulations " + name + " you have joined the giveaway!");
+            }
 
-    }
+        }
     #endregion
     public void SetCustoms()
     {

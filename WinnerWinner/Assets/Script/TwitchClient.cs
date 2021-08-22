@@ -48,7 +48,6 @@ public class TwitchClient : MonoBehaviour
     }
     private void MyMessageReceivedFunction(object sender, OnMessageReceivedArgs e)
     {
-        Debug.Log("Message received from: " + e.ChatMessage.Username + "that said: " + e.ChatMessage.Message);
         int scene = SceneManager.GetActiveScene().buildIndex;
         if (scene == 1)
         {
@@ -62,11 +61,8 @@ public class TwitchClient : MonoBehaviour
         }
 
     }
-
-    // Update is called once per frame
     public void sendMess(string message)
     {
-        Debug.Log("Send Message: " + message);
         client.SendMessage(client.JoinedChannels[0], message);
     }
 }
