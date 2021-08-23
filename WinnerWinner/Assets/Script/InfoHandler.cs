@@ -52,17 +52,23 @@ public class InfoHandler : MonoBehaviour
 
     private void Awake()
     {
-
-    }
-    private void Start()
-    {
         gm = GameObject.Find("GameManager").GetComponent<GameManager>();
         Validated = gm.Valid;
         if (Validated)
         {
             Validating.SetActive(false);
             Giveaway.SetActive(true);
+            Timer.SetActive(false);
         }
+        else
+        {
+            Validating.SetActive(true);
+            Giveaway.SetActive(false);
+            Timer.SetActive(false);
+        }
+    }
+    private void Start()
+    {
         message = false;
         command = null;
         alertmessage = null;
@@ -107,6 +113,7 @@ public class InfoHandler : MonoBehaviour
             quickpick = false;
             if (validationWord.text.Length >= 8)
                 if (e.ChatMessage.Username.ToLower() == gm.channelChoice.ToLower())
+                {
                     if (e.ChatMessage.Message.ToLower() == validationWord.text.ToLower())
                     {
                         Validated = true;
@@ -120,6 +127,7 @@ public class InfoHandler : MonoBehaviour
                         client.sendMess("That is not the correct Validation word, please try again");
                         return;
                     }
+                }
                 else
                     return;
             else
@@ -128,28 +136,21 @@ public class InfoHandler : MonoBehaviour
         int value = 0;
         if (countdown)
         {
+            Debug.Log(e.ChatMessage.Message);
             quickpick = false;
-            if (e.ChatMessage.Message.ToLower() == command.ToLower())
+            if (e.ChatMessage.Message == command)
             {
+                Debug.Log("Matched command");
                 string name = e.ChatMessage.Username;
-                if (countdown)
-                {
-                    if (e.ChatMessage.UserType == TwitchLib.Client.Enums.UserType.Viewer)
+               if (e.ChatMessage.UserType == TwitchLib.Client.Enums.UserType.Viewer)
                         value = 0;
                     else if (e.ChatMessage.UserType != TwitchLib.Client.Enums.UserType.Viewer)
                         value = 2;
                     else if (e.ChatMessage.IsSubscriber)
                         value = 1;
-
-                    if (submodT.isOn && value <= 1)
-                        DisplayList(name, value);
-                }
-                else
-                {
-                    return;
-                }
-
-                if (e.ChatMessage.Message.ToLower() == "!entries")
+                gm.AddList(name, value);
+                
+                if (e.ChatMessage.Message == "!entries")
                 {
                     for (int i = 0; i < Parts.Count; i++)
                     {
@@ -167,7 +168,7 @@ public class InfoHandler : MonoBehaviour
             }
         }
     }
-    public void DisplayList(string name, int value)
+    public void DisplayList(string name)
         {
             int a = 0;
             if (count > 20)
@@ -189,7 +190,6 @@ public class InfoHandler : MonoBehaviour
                 count = +1;
                 participants[a] += name + "\n";
                 Parts[a].text = participants[a];
-                gm.AddList(name, value);
                 client.sendMess("Congratulations " + name + " you have joined the giveaway!");
             }
             else
@@ -197,7 +197,6 @@ public class InfoHandler : MonoBehaviour
                 count += 1;
                 participants[0] += name + "\n";
                 Parts[0].text = participants[0];
-                gm.AddList(name, value);
                 client.sendMess("Congratulations " + name + " you have joined the giveaway!");
             }
 
@@ -226,13 +225,6 @@ public class InfoHandler : MonoBehaviour
     {
         countdown = false;
         gm.Pickname();
-    }
-    public void NewDrawing()
-    {
-        Validated = true;
-        message = false;
-        gm.names.Clear();
-        count = 0;
     }
     void DisplayTime(float timeToDisplay)
     {

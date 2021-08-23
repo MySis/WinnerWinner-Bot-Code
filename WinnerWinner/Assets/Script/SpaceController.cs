@@ -30,7 +30,7 @@ public class SpaceController : MonoBehaviour
             Vector2 spawnpos = findRandom();
             if (gos.Count > 1)
             {
-                for (int ai = 0; ai < gos.Count; ai++)
+                for (int i = 0; i < gos.Count; i++)
                 {
                         GameObject pref = (GameObject)Instantiate(prefab, spawnpos, Quaternion.identity);
                         pref.transform.LookAt(transform);

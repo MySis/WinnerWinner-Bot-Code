@@ -40,32 +40,47 @@ public class GameManager : MonoBehaviour
         Valid = true;
         number = 0;
         winnerName = null;
-        SceneManager.LoadScene(1);
         names.Clear();
+        if (SceneManager.GetActiveScene().buildIndex != 1)
+        {
+            SceneManager.LoadScene(1);
+        }
     }
     public void AddList(string name, int value)
     {
         InfoHandler info = GameObject.Find("InfoHandler").GetComponent<InfoHandler>();
-        names.Add(name);
-
-        if (value ==1)
+        if (!info.modsT.isOn && !info.subsT.isOn && !info.submodT.isOn)
         {
-            if (info.subsT.isOn || info.submodT.isOn)            
-            {
-                names.Add(name);
-            }
+            names.Add(name);
+            info.DisplayList(name);
         }
-        if (value ==2)
+        else
         {
-            if(info.modsT.isOn)
+            if (value == 1)
             {
-                names.Add(name);
-                names.Add(name);                
+                if (info.subsT.isOn || info.submodT.isOn)
+                {
+                    names.Add(name);
+                    names.Add(name);
+                    info.DisplayList(name);
+                }
             }
-            else if (info.submodT.isOn)
+            else if (value == 2)
             {
-                names.Add(name);
-            }    
+                if (info.modsT.isOn)
+                {
+                    names.Add(name);
+                    names.Add(name);
+                    names.Add(name);
+                    info.DisplayList(name);
+                }
+                else if (info.submodT.isOn)
+                {
+                    names.Add(name);
+                    names.Add(name);
+                    info.DisplayList(name);
+                }
+            }
         }
     }
     public void Pickname()
